@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "UnisonHT Plugin for LIRC",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joeferner/unisonht-lirc.git"
@@ -20,6 +19,7 @@
   },
   "homepage": "https://github.com/joeferner/unisonht-lirc#readme",
   "dependencies": {
+    "lirc-client": "^1.0.0",
     "unisonht": "^1.0.0"
   }
 }
