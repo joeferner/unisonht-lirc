@@ -1,0 +1,25 @@
+{
+  "name": "unisonht-lirc",
+  "version": "1.0.0",
+  "description": "UnisonHT Plugin for LIRC",
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joeferner/unisonht-lirc.git"
+  },
+  "keywords": [
+    "unisonht",
+    "lirc"
+  ],
+  "author": "Joe Ferner <joe@fernsroth.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joeferner/unisonht-lirc/issues"
+  },
+  "homepage": "https://github.com/joeferner/unisonht-lirc#readme",
+  "dependencies": {
+    "unisonht": "^1.0.0"
+  }
+}
