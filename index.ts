@@ -1,7 +1,7 @@
 import UnisonHT from "unisonht";
 import {Input, InputOptions} from "unisonht/lib/Input";
-import createLogger from "unisonht/lib/Log";
 const lircClient = require("lirc-client");
+import createLogger from "unisonht/lib/Log";
 const log = createLogger('lirc');
 
 interface LircOptions extends InputOptions {
@@ -24,6 +24,7 @@ export default class Lirc extends Input {
       this.lirc = lircClient({
         path: this.options.path
       });
+
       this.lirc.on('connect', () => {
         if (resolve) {
           resolve();
@@ -31,9 +32,7 @@ export default class Lirc extends Input {
         resolve = null;
         reject = null;
       });
-      this.lirc.on('receive', (remote, button, repeat) => {
-        log.debug('receive: %s, %s, %s', remote, button, repeat);
-      });
+
       this.lirc.on('error', (message)=> {
         log.error('error: %s', message);
         if (reject) {
@@ -42,6 +41,19 @@ export default class Lirc extends Input {
         resolve = null;
         reject = null;
       });
+
+      this.lirc.on('receive', (remote, button, repeat) => {
+        log.debug('receive: %s, %s, %s', remote, button, repeat);
+        unisonHT.processInput({
+          remote: remote,
+          button: button,
+          repeat: repeat
+        })
+          .catch((err)=> {
+            log.error('invalid key press', err);
+          })
+      });
+
       this.lirc.on('disconnect', ()=> {
         log.debug('disconnect');
       });
