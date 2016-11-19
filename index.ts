@@ -1,21 +1,21 @@
-import UnisonHT from "unisonht";
-import {Input, InputOptions} from "unisonht/lib/Input";
-const lircClient = require("lirc-client");
+/// <reference path="./lirc-client.d.ts" />
+
+import {UnisonHT, UnisonHTInput} from "unisonht";
 import createLogger from "unisonht/lib/Log";
+import lircClient = require("lirc-client");
 const log = createLogger('lirc');
 
-interface LircOptions extends InputOptions {
-  path?: string
-}
-
-export default class Lirc extends Input {
+export default class Lirc implements UnisonHTInput {
   private lirc;
-  private options: LircOptions;
+  private options: Lirc.Options;
 
-  constructor(options: LircOptions) {
-    super(options);
+  constructor(options: Lirc.Options) {
     this.options = options;
     this.options.path = this.options.path || '/var/run/lirc/lircd';
+  }
+
+  getName(): string {
+    return this.options.name;
   }
 
   start(unisonHT: UnisonHT): Promise<void> {
@@ -60,9 +60,16 @@ export default class Lirc extends Input {
     });
   }
 
-  stop(unisonHT: UnisonHT): Promise<void> {
+  stop(): Promise<void> {
     this.lirc.close();
     this.lirc = null;
     return Promise.resolve();
+  }
+}
+
+module Lirc {
+  export interface Options {
+    name: string
+    path?: string
   }
 }
