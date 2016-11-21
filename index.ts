@@ -1,5 +1,3 @@
-/// <reference path="./lirc-client.d.ts" />
-
 import {UnisonHT, UnisonHTInput} from "unisonht";
 import createLogger from "unisonht/lib/Log";
 import lircClient = require("lirc-client");
@@ -50,7 +48,7 @@ export default class Lirc implements UnisonHTInput {
           repeat: repeat
         })
           .catch((err)=> {
-            log.error('invalid key press', err);
+            log.error('invalid key press: ', err);
           })
       });
 
