@@ -18,7 +18,7 @@ export default class Lirc implements UnisonHTInput {
 
   start(unisonHT: UnisonHT): Promise<void> {
     log.debug('connecting to LIRC');
-    return new Promise((resolve, reject)=> {
+    return new Promise<void>((resolve, reject)=> {
       this.lirc = lircClient({
         path: this.options.path
       });
