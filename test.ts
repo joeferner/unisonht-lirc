@@ -1,6 +1,11 @@
-const repl = require('repl');
-const Lirc = require('.').default;
-var lirc = new Lirc({});
+import {UnisonHT} from "unisonht";
+import {Lirc} from ".";
 
-const r = repl.start('> ');
-r.context.lirc = lirc;
+const unisonht = new UnisonHT();
+
+unisonht.use(new Lirc('lirc'));
+
+unisonht.listen(3000)
+  .catch((err) => {
+    console.error('listen error', err);
+  });

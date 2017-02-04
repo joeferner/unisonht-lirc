@@ -1,59 +1,41 @@
-import {UnisonHT, UnisonHTInput} from "unisonht";
-import createLogger from "unisonht/lib/Log";
+import {UnisonHT, Plugin, Input} from "unisonht";
 import lircClient = require("lirc-client");
-const log = createLogger('lirc');
 
-export default class Lirc implements UnisonHTInput {
+export class Lirc extends Input {
   private lirc;
-  private options: Lirc.Options;
 
-  constructor(options: Lirc.Options) {
-    this.options = options;
-    this.options.path = this.options.path || '/var/run/lirc/lircd';
+  constructor(name: string, options?: Lirc.Options) {
+    super(name, options || {});
+    this.getOptions().path = this.getOptions().path || '/var/run/lirc/lircd';
   }
 
-  getName(): string {
-    return this.options.name;
-  }
-
-  start(unisonHT: UnisonHT): Promise<void> {
-    log.debug('connecting to LIRC');
-    return new Promise<void>((resolve, reject)=> {
+  start(unisonht: UnisonHT): Promise<void> {
+    this.log.debug('connecting to LIRC');
+    return new Promise<void>((resolve, reject) => {
       this.lirc = lircClient({
-        path: this.options.path
+        path: this.getOptions().path
       });
 
       this.lirc.on('connect', () => {
-        if (resolve) {
-          resolve();
-        }
-        resolve = null;
-        reject = null;
+        resolve();
       });
 
-      this.lirc.on('error', (message)=> {
-        log.error('error: %s', message);
-        if (reject) {
-          reject();
-        }
-        resolve = null;
-        reject = null;
+      this.lirc.on('error', (message) => {
+        this.log.error(`${message}`);
+        this.stop();
+        reject(new Error(message));
       });
 
       this.lirc.on('receive', (remote, button, repeat) => {
-        log.debug('receive: %s, %s, %s', remote, button, repeat);
-        unisonHT.processInput({
-          remote: remote,
-          button: button,
-          repeat: repeat
-        })
-          .catch((err)=> {
-            log.error('invalid key press: ', err);
+        this.log.debug(`receive: ${remote}, ${button}, ${repeat}`);
+        unisonht.currentModeButtonPress(button)
+          .catch((err) => {
+            this.log.error('invalid key press: ', err);
           })
       });
 
-      this.lirc.on('disconnect', ()=> {
-        log.debug('disconnect');
+      this.lirc.on('disconnect', () => {
+        this.log.debug('disconnect');
       });
     });
   }
@@ -63,11 +45,14 @@ export default class Lirc implements UnisonHTInput {
     this.lirc = null;
     return Promise.resolve();
   }
+
+  protected getOptions(): Lirc.Options {
+    return <Lirc.Options>super.getOptions();
+  }
 }
 
-module Lirc {
-  export interface Options {
-    name: string
+export module Lirc {
+  export interface Options extends Input.Options {
     path?: string
   }
 }
