@@ -1,49 +1,31 @@
 import {UnisonHT, Plugin, Input} from "unisonht";
-import lircClient = require("lirc-client");
+import {LircClient} from "./LircClient";
+import {MockLircClient} from "./MockLircClient";
+import {LircClientImpl} from "./LircClientImpl";
 
 export class Lirc extends Input {
-  private lirc;
+  private lircClient: LircClient;
 
   constructor(name: string, options?: Lirc.Options) {
     super(name, options || {});
-    this.getOptions().path = this.getOptions().path || '/var/run/lirc/lircd';
+    this.lircClient =
+      process.env.NODE_ENV === 'development'
+        ? new MockLircClient()
+        : new LircClientImpl(options.path || '/var/run/lirc/lircd');
   }
 
   start(unisonht: UnisonHT): Promise<void> {
     this.log.debug('connecting to LIRC');
-    return new Promise<void>((resolve, reject) => {
-      this.lirc = lircClient({
-        path: this.getOptions().path
-      });
-
-      this.lirc.on('connect', () => {
-        resolve();
-      });
-
-      this.lirc.on('error', (message) => {
-        this.log.error(`${message}`);
-        this.stop();
-        reject(new Error(message));
-      });
-
-      this.lirc.on('receive', (remote, button, repeat) => {
-        this.log.debug(`receive: ${remote}, ${button}, ${repeat}`);
-        unisonht.currentModeButtonPress(button)
-          .catch((err) => {
-            this.log.error('invalid key press: ', err);
-          })
-      });
-
-      this.lirc.on('disconnect', () => {
-        this.log.debug('disconnect');
-      });
+    return this.lircClient.start((remote: string, button: string, repeat: number) => {
+      unisonht.currentModeButtonPress(button)
+        .catch((err) => {
+          this.log.error('invalid key press: ', err);
+        });
     });
   }
 
   stop(): Promise<void> {
-    this.lirc.close();
-    this.lirc = null;
-    return Promise.resolve();
+    return this.lircClient.stop();
   }
 
   protected getOptions(): Lirc.Options {

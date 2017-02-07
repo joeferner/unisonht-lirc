@@ -6,6 +6,9 @@
   "files": [
     "index.ts",
     "test.ts",
+    "LircClient.ts",
+    "LircClientImpl.ts",
+    "MockLircClient.ts",
     "lirc-client.d.ts"
   ]
 }
