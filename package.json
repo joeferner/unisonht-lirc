@@ -2,7 +2,8 @@
   "name": "@unisonht/lirc",
   "version": "0.0.1",
   "description": "UnisonHT Plugin for LIRC",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
   "scripts": {
     "test:watch": "nodemon ./dist/test.js",
     "build": "tsc",

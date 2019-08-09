@@ -1,8 +1,5 @@
 import { UnisonHT } from '@unisonht/unisonht';
 import { Lirc } from '.';
-import Debug from 'debug';
-
-const debug = Debug('lirc:test');
 
 const port = 3000;
 const unisonht = new UnisonHT({});
@@ -18,9 +15,9 @@ unisonht.use(
 async function start() {
   try {
     await unisonht.listen(port);
-    debug(`Listening http://localhost:${port}`);
+    console.log(`Listening http://localhost:${port}`);
   } catch (err) {
-    debug(`failed to start: ${err}`);
+    console.error('failed to start', err);
   }
 }
 

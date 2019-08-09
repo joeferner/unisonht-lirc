@@ -41,7 +41,12 @@ export class Lirc implements UnisonHTPlugin {
         if (this.options.fromLirc) {
           const key = this.options.fromLirc(remote, button);
           if (this.unisonht) {
-            await this.unisonht.executePost(`/key/${key}`);
+            const url = `/key/${key}`;
+            try {
+              await this.unisonht.executePost(url);
+            } catch (err) {
+              console.error(`failed to execute post: ${url}`, err);
+            }
           } else {
             debug('received message from lirc but unisonht not setup');
           }
@@ -49,7 +54,7 @@ export class Lirc implements UnisonHTPlugin {
           debug('received message from lirc but "fromLirc" not defined');
         }
       } catch (err) {
-        debug(`failed to receive: ${err}`);
+        console.error('failed to process receive', err);
       }
     });
   }
