@@ -6,7 +6,11 @@
   "scripts": {
     "test:watch": "nodemon ./dist/test.js",
     "build": "tsc",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -33,6 +37,9 @@
     "@types/debug": "^4.1.5",
     "@types/node": "^12.7.1",
     "nodemon": "^1.19.1",
+    "prettier": "^1.18.2",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.3"
   }
 }
