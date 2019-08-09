@@ -1,9 +1,13 @@
 {
-  "name": "unisonht-lirc",
-  "version": "1.0.0",
+  "name": "@unisonht/lirc",
+  "version": "0.0.1",
   "description": "UnisonHT Plugin for LIRC",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:watch": "nodemon ./dist/test.js",
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joeferner/unisonht-lirc.git"
@@ -19,19 +23,16 @@
   },
   "homepage": "https://github.com/joeferner/unisonht-lirc#readme",
   "dependencies": {
-    "lirc-client": "^1.0.0"
+    "debug": "^4.1.1",
+    "lirc-client": "^2.0.0"
   },
   "peerDependencies": {
-    "boom": "4.x",
-    "express": "4.x",
-    "http-status-codes": "1.x",
-    "bunyan": "1.x",
-    "unisonht": "1.x"
+    "@unisonht/unisonht": "0.0.x"
   },
   "devDependencies": {
-    "@types/boom": "^0.0.33",
-    "@types/bunyan": "0.0.35",
-    "@types/express": "^4.0.35",
-    "@types/http-status-codes": "^1.0.29"
+    "@types/debug": "^4.1.5",
+    "@types/node": "^12.7.1",
+    "nodemon": "^1.19.1",
+    "typescript": "^3.5.3"
   }
 }
