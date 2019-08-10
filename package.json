@@ -29,9 +29,7 @@
   "homepage": "https://github.com/joeferner/unisonht-lirc#readme",
   "dependencies": {
     "debug": "^4.1.1",
-    "lirc-client": "^2.0.0"
-  },
-  "peerDependencies": {
+    "lirc-client": "^2.0.0",
     "@unisonht/unisonht": "0.0.x"
   },
   "devDependencies": {
