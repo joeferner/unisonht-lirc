@@ -1,4 +1,10 @@
-import { RouteHandlerRequest, RouteHandlerResponse, SupportedKeys, UnisonHT, UnisonHTPlugin } from '@unisonht/unisonht';
+import {
+  RouteHandlerRequest,
+  RouteHandlerResponse,
+  SupportedButtons,
+  UnisonHT,
+  UnisonHTPlugin,
+} from '@unisonht/unisonht';
 import { LircClientWrapper } from './LircClientWrapper';
 import { LircClientWrapperMock } from './LircClientWrapperMock';
 import { LircClientWrapperImpl } from './LircClientWrapperImpl';
@@ -14,7 +20,7 @@ export interface LircButton {
 export interface LircOptions {
   useMockClient?: boolean;
   path?: string;
-  toLirc?: (key: string) => LircButton;
+  toLirc?: (button: string) => LircButton;
   fromLirc?: (remote: string, button: string) => string;
 }
 
@@ -36,12 +42,12 @@ export class Lirc implements UnisonHTPlugin {
     this.lircClient = this.options.useMockClient
       ? new LircClientWrapperMock()
       : new LircClientWrapperImpl(this.options.path || DEFAULT_OPTIONS.path);
-    this.lircClient.on('receive', async (remote: string, button: string, repeat: number) => {
+    this.lircClient.on('receive', async (remote: string, lircButton: string, repeat: number) => {
       try {
         if (this.options.fromLirc) {
-          const key = this.options.fromLirc(remote, button);
+          const button = this.options.fromLirc(remote, lircButton);
           if (this.unisonht) {
-            const url = `/key/${key}`;
+            const url = `/button/${button}`;
             try {
               await this.unisonht.executePost(url);
             } catch (err) {
@@ -65,21 +71,21 @@ export class Lirc implements UnisonHTPlugin {
     await this.lircClient.start();
   }
 
-  public async handleKeyPress(
-    key: string,
+  public async handleButtonPress(
+    button: string,
     request: RouteHandlerRequest,
     response: RouteHandlerResponse,
     next: (err?: Error) => void,
   ): Promise<void> {
     if (this.options.toLirc) {
-      const { remote, button } = this.options.toLirc(key);
-      await this.lircClient.sendOnce(remote, button);
+      const { remote, button: lircButton } = this.options.toLirc(button);
+      await this.lircClient.sendOnce(remote, lircButton);
     } else {
       next();
     }
   }
 
-  public getSupportedKeys(): SupportedKeys {
+  public getSupportedButtons(): SupportedButtons {
     return {};
   }
 }
