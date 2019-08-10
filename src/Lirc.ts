@@ -1,4 +1,4 @@
-import { RouteHandlerRequest, RouteHandlerResponse, UnisonHT, UnisonHTPlugin } from '@unisonht/unisonht';
+import { RouteHandlerRequest, RouteHandlerResponse, SupportedKeys, UnisonHT, UnisonHTPlugin } from '@unisonht/unisonht';
 import { LircClientWrapper } from './LircClientWrapper';
 import { LircClientWrapperMock } from './LircClientWrapperMock';
 import { LircClientWrapperImpl } from './LircClientWrapperImpl';
@@ -77,5 +77,9 @@ export class Lirc implements UnisonHTPlugin {
     } else {
       next();
     }
+  }
+
+  public getSupportedKeys(): SupportedKeys {
+    return {};
   }
 }
