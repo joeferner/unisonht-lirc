@@ -6,20 +6,20 @@ const unisonht = new UnisonHT({});
 unisonht.use(new WebApi({ port }));
 
 unisonht.use(
-  new Lirc('lirc', {
-    fromLirc: (remote, button) => {
-      return button;
-    },
-  }),
+    new Lirc('lirc', {
+        fromLirc: (remote, button) => {
+            return button;
+        },
+    }),
 );
 
 async function start() {
-  try {
-    await unisonht.start();
-    console.log(`Listening http://localhost:${port}`);
-  } catch (err) {
-    console.error('failed to start', err);
-  }
+    try {
+        await unisonht.start();
+        console.log(`Listening http://localhost:${port}`);
+    } catch (err) {
+        console.error('failed to start', err);
+    }
 }
 
 start();
